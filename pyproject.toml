@@ -1,0 +1,41 @@
+[tool.poetry]
+name = "pyfocalboard"
+version = "1.0.0"
+description = "Python bindings for Focalboard HTTP API"
+authors = ["Michal Karol <michal.p.karol@gmail.com>"]
+license = "MIT License"
+readme = "README.md"
+keywords = ["mattermost", "focalboard"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Topic :: Communications :: Chat",
+    "Topic :: Internet :: WWW/HTTP",
+
+    # Pick your license as you wish (see also "license" above)
+    "License :: OSI Approved :: MIT License",
+
+    # Specify the Python versions you support here.
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+]
+
+[tool.poetry.urls]
+Homepage = "https://michalkarol.github.io/pyfocalboard/"
+Documentation = "https://michalkarol.github.io/pyfocalboard/"
+Repository = "https://github.com/MichalKarol/pyfocalboard"
+Issues = "https://github.com/MichalKarol/pyfocalboard/issues"
+Releases = "https://github.com/MichalKarol/pyfocalboard/releases"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+requests = "^2.32.3"
+dataclasses-json = "^0.6.7"
+ruff = "^0.7.0"
+
+[tool.ruff.lint]
+extend-select = ["I"]
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
