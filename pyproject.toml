@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pyfocalboard"
-version = "1.0.0"
+version = "1.0.1"
 description = "Python bindings for Focalboard HTTP API"
 authors = ["Michal Karol <michal.p.karol@gmail.com>"]
 license = "MIT License"
@@ -26,6 +26,7 @@ Documentation = "https://michalkarol.github.io/pyfocalboard/"
 Repository = "https://github.com/MichalKarol/pyfocalboard"
 Issues = "https://github.com/MichalKarol/pyfocalboard/issues"
 Releases = "https://github.com/MichalKarol/pyfocalboard/releases"
+Changelog = "https://github.com/MichalKarol/pyfocalboard/blob/main/CHANGELOG"
 
 [tool.poetry.dependencies]
 python = "^3.12"

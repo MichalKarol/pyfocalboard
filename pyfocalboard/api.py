@@ -14,6 +14,7 @@ from pyfocalboard.types import (
     BoardsStatistics,
     Card,
     CardBody,
+    CardPatch,
     Category,
     CategoryBody,
     Channel,
@@ -524,7 +525,7 @@ class FocalboardApi:
         return Card.from_dict(data)
 
     def patch_card(
-        self, card_id: str, card: CardBody | None, disable_notify: bool = False
+        self, card_id: str, card: CardPatch | None, disable_notify: bool = False
     ) -> Card:
         """
         Patches the specified card.

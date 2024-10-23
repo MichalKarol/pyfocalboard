@@ -43,22 +43,15 @@ class FieldOption:
     _other: CatchAll
 
 
-@dataclass_json(undefined=Undefined.EXCLUDE)
+@dataclass_json(undefined=Undefined.INCLUDE)
 @dataclass(kw_only=True)
-class FieldBody:
+class Field:
     ""
 
+    id: str | None = None
     name: str
     options: list[FieldOption] | None = None
     type: str | None = None
-
-
-@dataclass_json(undefined=Undefined.INCLUDE)
-@dataclass(kw_only=True)
-class Field(FieldBody):
-    ""
-
-    id: str
     _other: CatchAll
 
 
@@ -112,7 +105,18 @@ class CardBody:
     contentOrder: list[str] | None = None
     icon: str | None = None
     isTemplate: bool | None = None
-    properties: dict[str, str] | None = None
+    properties: dict[str, Any] | None = None
+
+
+@dataclass_json(undefined=Undefined.EXCLUDE)
+@dataclass(kw_only=True)
+class CardPatch:
+    ""
+
+    title: str | None = None
+    contentOrder: list[str] | None = None
+    icon: str | None = None
+    updatedProperties: dict[str, Any] | None = None
 
 
 @dataclass_json(undefined=Undefined.INCLUDE)
@@ -171,7 +175,7 @@ class BoardBody:
     isTemplate: bool | None = None
     templateVersion: int | None = None
     properties: dict[str, str] | None = None
-    cardProperties: list[FieldBody] | None = None
+    cardProperties: list[Field] | None = None
 
 
 @dataclass_json(undefined=Undefined.INCLUDE)
