@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pyfocalboard"
-version = "1.0.1"
+version = "1.0.2"
 description = "Python bindings for Focalboard HTTP API"
 authors = ["Michal Karol <michal.p.karol@gmail.com>"]
 license = "MIT License"

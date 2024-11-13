@@ -1,7 +1,7 @@
-# pyfocalboard
+# pyfocalboard  [![PyPI - Version](https://img.shields.io/pypi/v/pyfocalboard?style=for-the-badge)](https://pypi.org/project/pyfocalboard/)
 Python bindings for Focalboard HTTP API.
 
-## Licence
+## License
 MIT
 
 ## Example

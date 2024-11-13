@@ -1,3 +1,9 @@
+1.0.2 (2024-11-13)
+* Fixed issue #1 with fixed API endpoint. Now user can either set the standalone or plugin server mode, and set non standard api url for cases where FB api is proxied.
+* Fixed issue #4 with error handling. Added _check_response, that validates the response code and throws if status code is not in range <200,400).
+* Added `page` and `per_page` arguments to the get_cards method.
+* Added PyPi version shied to README
+
 1.0.1 (2024-10-23)
 * Fixed issue with missing Field id when getting board info
 * Fixed issue with incorrect model for card patch

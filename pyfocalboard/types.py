@@ -433,4 +433,5 @@ class ApiError:
 
 
 class HTTP_CODES:
-    OK = 200
+    Ok = 200
+    BadRequest = 400

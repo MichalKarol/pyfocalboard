@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import TypeVar
 
-from requests import Session
+from requests import Response, Session
 
 from pyfocalboard.types import (
     HTTP_CODES,
@@ -36,20 +36,46 @@ T = TypeVar("T")
 
 
 class FocalboardApi:
-    _API_URl = "/plugins/focalboard/api/v2"
+    MM_PLUGIN_API_URL = "/plugins/focalboard/api/v2"
+    STANDALONE_API_URL = "/api/v2"
 
-    def __init__(self, token: str | None, server: str):
+    def __init__(
+        self,
+        token: str | None,
+        server: str,
+        is_standalone=False,
+        non_standard_api_url: str | None = None,
+    ):
         self._server = server
         self._client = Session()
         self._client.headers["X-Requested-With"] = "XMLHttpRequest"
+        self.api_url = (
+            FocalboardApi.STANDALONE_API_URL
+            if is_standalone
+            else FocalboardApi.MM_PLUGIN_API_URL
+        )
+        self.api_url = (
+            self.api_url if not non_standard_api_url else non_standard_api_url
+        )
+
         if token:
             self._client.headers["Authorization"] = "Bearer " + token
 
-    def _handle_possible_error(self, data: T) -> T:
-        if isinstance(data, dict):
-            if "error" in data and "errorCode" in data:
+    def _check_response(self, response: Response) -> None:
+        if HTTP_CODES.Ok <= response.status_code < HTTP_CODES.BadRequest:
+            return
+
+        if response.headers.get("Content-Type", "") == "application/json":
+            data = response.json()
+            if isinstance(data, dict) and "error" in data and "errorCode" in data:
                 raise Exception(ApiError.from_dict(data))
-        return data
+
+        raise Exception(
+            ApiError(
+                error=f"Invalid status code. {response.text()}",
+                errorCode=response.status_code,
+            )
+        )
 
     # MARK: Block
     def get_blocks(
@@ -61,13 +87,14 @@ class FocalboardApi:
         [https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-getBlocks](https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-getBlocks)
         """
         response = self._client.get(
-            f"{self._server}{self._API_URl}/boards/{board_id}/blocks",
+            f"{self._server}{self.api_url}/boards/{board_id}/blocks",
             params={
                 "parent_id:": parent_id,
                 "type": type,
             },
         )
-        data = self._handle_possible_error(response.json())
+        self._check_response(response)
+        data = response.json()
         return [Block.from_dict(item) for item in data]
 
     def patch_block(
@@ -83,11 +110,11 @@ class FocalboardApi:
         [https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-patchBlock](https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-patchBlock)
         """
         response = self._client.patch(
-            f"{self._server}{self._API_URl}/boards/{board_id}/blocks/{block_id}",
+            f"{self._server}{self.api_url}/boards/{board_id}/blocks/{block_id}",
             json=block.to_dict(),
             params=dict(disable_notify="true" if disable_notify else "false"),
         )
-        self._handle_possible_error(response.json())
+        self._check_response(response)
 
     def update_blocks(
         self,
@@ -101,11 +128,11 @@ class FocalboardApi:
         [https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-updateBlocks](https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-updateBlocks)
         """
         response = self._client.post(
-            f"{self._server}{self._API_URl}/boards/{board_id}/blocks",
+            f"{self._server}{self.api_url}/boards/{board_id}/blocks",
             json=[block.to_dict() for block in blocks],
             params=dict(disable_notify="true" if disable_notify else "false"),
         )
-        self._handle_possible_error(response.json())
+        self._check_response(response)
 
     def patch_blocks(
         self,
@@ -120,13 +147,13 @@ class FocalboardApi:
         [https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-patchBlocks](https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-patchBlocks)
         """
         response = self._client.patch(
-            f"{self._server}{self._API_URl}/boards/{board_id}/blocks",
+            f"{self._server}{self.api_url}/boards/{board_id}/blocks",
             json=dict(
                 block_ids=block_ids, block_patches=[block.to_dict() for block in blocks]
             ),
             params=dict(disable_notify="true" if disable_notify else "false"),
         )
-        self._handle_possible_error(response.json())
+        self._check_response(response)
 
     def delete_block(self, board_id: str, block_id: str) -> None:
         """
@@ -135,9 +162,9 @@ class FocalboardApi:
         [https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-deleteBlock](https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-deleteBlock)
         """
         response = self._client.delete(
-            f"{self._server}{self._API_URl}/boards/{board_id}/blocks/{block_id}",
+            f"{self._server}{self.api_url}/boards/{board_id}/blocks/{block_id}",
         )
-        self._handle_possible_error(response.json())
+        self._check_response(response)
 
     def duplicate_block(self, board_id: str, block_id: str) -> None:
         """
@@ -146,9 +173,10 @@ class FocalboardApi:
         [https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-duplicateBlock](https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-duplicateBlock)
         """
         response = self._client.post(
-            f"{self._server}{self._API_URl}/boards/{board_id}/blocks/{block_id}/duplicate",
+            f"{self._server}{self.api_url}/boards/{board_id}/blocks/{block_id}/duplicate",
         )
-        data = self._handle_possible_error(response.json())
+        self._check_response(response)
+        data = response.json()
         return [Block.from_dict(item) for item in data]
 
     def undelete_block(self, board_id: str, block_id: str) -> None:
@@ -158,9 +186,9 @@ class FocalboardApi:
         [https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-undeleteBlock](https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-undeleteBlock)
         """
         response = self._client.post(
-            f"{self._server}{self._API_URl}/boards/{board_id}/blocks/{block_id}/undelete",
+            f"{self._server}{self.api_url}/boards/{board_id}/blocks/{block_id}/undelete",
         )
-        self._handle_possible_error(response.json())
+        self._check_response(response)
 
     # MARK: Board
     def search_all_boards(self, query: str = "") -> list[Board]:
@@ -171,9 +199,10 @@ class FocalboardApi:
         """
 
         response = self._client.get(
-            f"{self._server}{self._API_URl}/boards/search", params=dict(q=query)
+            f"{self._server}{self.api_url}/boards/search", params=dict(q=query)
         )
-        data = self._handle_possible_error(response.json())
+        self._check_response(response)
+        data = response.json()
         return [Board.from_dict(item) for item in data]
 
     def search_boards(self, team_id: str, query: str = "") -> list[Board]:
@@ -183,10 +212,11 @@ class FocalboardApi:
         [https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-searchBoards](https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-searchBoards)
         """
         response = self._client.get(
-            f"{self._server}{self._API_URl}/teams/{team_id}/boards/search",
+            f"{self._server}{self.api_url}/teams/{team_id}/boards/search",
             params=dict(q=query),
         )
-        data = self._handle_possible_error(response.json())
+        self._check_response(response)
+        data = response.json()
         return [Board.from_dict(item) for item in data]
 
     def search_linkable_boards(self, team_id: str, query: str = "") -> list[Board]:
@@ -196,10 +226,11 @@ class FocalboardApi:
         [https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-searchLinkableBoards](https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-searchLinkableBoards)
         """
         response = self._client.get(
-            f"{self._server}{self._API_URl}/teams/{team_id}/boards/search/linkable",
+            f"{self._server}{self.api_url}/teams/{team_id}/boards/search/linkable",
             params=dict(q=query),
         )
-        data = self._handle_possible_error(response.json())
+        self._check_response(response)
+        data = response.json()
         return [Board.from_dict(item) for item in data]
 
     def get_boards(self, team_id: str) -> list[Board]:
@@ -209,9 +240,10 @@ class FocalboardApi:
         [https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-getBoards](https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-getBoards)
         """
         response = self._client.get(
-            f"{self._server}{self._API_URl}/teams/{team_id}/boards"
+            f"{self._server}{self.api_url}/teams/{team_id}/boards"
         )
-        data = self._handle_possible_error(response.json())
+        self._check_response(response)
+        data = response.json()
         return [Board.from_dict(item) for item in data]
 
     def get_board(self, board_id: str) -> Board:
@@ -220,8 +252,9 @@ class FocalboardApi:
 
         [https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-getBoard](https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-getBoard)
         """
-        response = self._client.get(f"{self._server}{self._API_URl}/boards/{board_id}")
-        data = self._handle_possible_error(response.json())
+        response = self._client.get(f"{self._server}{self.api_url}/boards/{board_id}")
+        self._check_response(response)
+        data = response.json()
         return Board.from_dict(data)
 
     def create_board(self, team_id: str, board: BoardBody) -> Board:
@@ -231,10 +264,11 @@ class FocalboardApi:
         [https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-createBoard](https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-createBoard)
         """
         response = self._client.post(
-            f"{self._server}{self._API_URl}/boards",
+            f"{self._server}{self.api_url}/boards",
             json=dict(teamID=team_id, **board.to_dict()),
         )
-        data = self._handle_possible_error(response.json())
+        self._check_response(response)
+        data = response.json()
         return Board.from_dict(data)
 
     def patch_board(self, board_id: str, board: BoardBody) -> Board:
@@ -244,10 +278,11 @@ class FocalboardApi:
         [https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-patchBoard](https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-patchBoard)
         """
         response = self._client.patch(
-            f"{self._server}{self._API_URl}/boards/{board_id}",
+            f"{self._server}{self.api_url}/boards/{board_id}",
             json=board.to_dict(),
         )
-        data = self._handle_possible_error(response.json())
+        self._check_response(response)
+        data = response.json()
         return Board.from_dict(data)
 
     def delete_board(self, board_id: str) -> None:
@@ -257,9 +292,9 @@ class FocalboardApi:
         [https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-deleteBoard](https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-deleteBoard)
         """
         response = self._client.delete(
-            f"{self._server}{self._API_URl}/boards/{board_id}",
+            f"{self._server}{self.api_url}/boards/{board_id}",
         )
-        self._handle_possible_error(response.json())
+        self._check_response(response)
 
     def join_board(self, board_id: str) -> None:
         """
@@ -268,9 +303,9 @@ class FocalboardApi:
         [https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-joinBoard](https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-joinBoard)
         """
         response = self._client.post(
-            f"{self._server}{self._API_URl}/boards/{board_id}/join"
+            f"{self._server}{self.api_url}/boards/{board_id}/join"
         )
-        self._handle_possible_error(response.json())
+        self._check_response(response)
 
     def leave_board(self, board_id: str) -> None:
         """
@@ -279,9 +314,9 @@ class FocalboardApi:
         [https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-leaveBoard](https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-leaveBoard)
         """
         response = self._client.post(
-            f"{self._server}{self._API_URl}/boards/{board_id}/leave"
+            f"{self._server}{self.api_url}/boards/{board_id}/leave"
         )
-        self._handle_possible_error(response.json())
+        self._check_response(response)
 
     def get_members_for_board(self, board_id: str) -> list[Member]:
         """
@@ -290,9 +325,10 @@ class FocalboardApi:
         [https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-getMembersForBoard](https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-getMembersForBoard)
         """
         response = self._client.get(
-            f"{self._server}{self._API_URl}/boards/{board_id}/members"
+            f"{self._server}{self.api_url}/boards/{board_id}/members"
         )
-        data = self._handle_possible_error(response.json())
+        self._check_response(response)
+        data = response.json()
         return [Member.from_dict(item) for item in data]
 
     def get_sharing(self, board_id: str) -> Sharing:
@@ -302,9 +338,10 @@ class FocalboardApi:
         [https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-getSharing](https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-getSharing)
         """
         response = self._client.get(
-            f"{self._server}{self._API_URl}/boards/{board_id}/sharing"
+            f"{self._server}{self.api_url}/boards/{board_id}/sharing"
         )
-        data = self._handle_possible_error(response.json())
+        self._check_response(response)
+        data = response.json()
         return Sharing.from_dict(data)
 
     def post_sharing(self, board_id: str, sharing: SharingBody) -> Sharing:
@@ -314,10 +351,11 @@ class FocalboardApi:
         [https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-postSharing](https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-postSharing)
         """
         response = self._client.post(
-            f"{self._server}{self._API_URl}/boards/{board_id}/sharing",
+            f"{self._server}{self.api_url}/boards/{board_id}/sharing",
             json=sharing.to_dict(),
         )
-        data = self._handle_possible_error(response.json())
+        self._check_response(response)
+        data = response.json()
         return Sharing.from_dict(data)
 
     def duplicate_board(self, board_id: str) -> BoardAndBlocks:
@@ -327,9 +365,10 @@ class FocalboardApi:
         [https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-duplicateBoard](https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-duplicateBoard)
         """
         response = self._client.post(
-            f"{self._server}{self._API_URl}/boards/{board_id}/duplicate"
+            f"{self._server}{self.api_url}/boards/{board_id}/duplicate"
         )
-        data = self._handle_possible_error(response.json())
+        self._check_response(response)
+        data = response.json()
         return BoardAndBlocks.from_dict(data)
 
     def add_member(
@@ -341,10 +380,11 @@ class FocalboardApi:
         [https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-addMember](https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-addMember)
         """
         response = self._client.post(
-            f"{self._server}{self._API_URl}/boards/{board_id}/members",
+            f"{self._server}{self.api_url}/boards/{board_id}/members",
             json=dict(userID=user_id, **(member.to_dict() if member else {})),
         )
-        data = self._handle_possible_error(response.json())
+        self._check_response(response)
+        data = response.json()
         return Member.from_dict(data)
 
     def update_member(self, board_id: str, user_id: str, member: MemberBody) -> Member:
@@ -354,10 +394,11 @@ class FocalboardApi:
         [https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-updateMember](https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-updateMember)
         """
         response = self._client.put(
-            f"{self._server}{self._API_URl}/boards/{board_id}/members/{user_id}",
+            f"{self._server}{self.api_url}/boards/{board_id}/members/{user_id}",
             json=member.to_dict(),
         )
-        data = self._handle_possible_error(response.json())
+        self._check_response(response)
+        data = response.json()
         return Member.from_dict(data)
 
     def delete_member(
@@ -371,9 +412,9 @@ class FocalboardApi:
         [https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-deleteMember](https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-deleteMember)
         """
         response = self._client.delete(
-            f"{self._server}{self._API_URl}/boards/{board_id}/members/{user_id}",
+            f"{self._server}{self.api_url}/boards/{board_id}/members/{user_id}",
         )
-        self._handle_possible_error(response.json())
+        self._check_response(response)
 
     def archive_board_export(self, board_id: str) -> bytes:
         """
@@ -382,10 +423,9 @@ class FocalboardApi:
         [https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-archiveExportBoard](https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-archiveExportBoard)
         """
         response = self._client.get(
-            f"{self._server}{self._API_URl}/boards/{board_id}/archive/export",
+            f"{self._server}{self.api_url}/boards/{board_id}/archive/export",
         )
-        if response.status_code != HTTP_CODES.OK:
-            self._handle_possible_error(response.json())
+        self._check_response(response)
         return response.content
 
     def update_board_category(
@@ -397,10 +437,9 @@ class FocalboardApi:
         [https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-updateCategoryBoard](https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-updateCategoryBoard)
         """
         response = self._client.post(
-            f"{self._server}{self._API_URl}/teams/{team_id}/categories/{category_id}/boards/{board_id}",
+            f"{self._server}{self.api_url}/teams/{team_id}/categories/{category_id}/boards/{board_id}",
         )
-        if response.status_code != HTTP_CODES.OK:
-            self._handle_possible_error(response.json())
+        self._check_response(response)
 
     def undelete_board(self, board_id: str) -> None:
         """
@@ -409,9 +448,9 @@ class FocalboardApi:
         [https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-undeleteBoard](https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-undeleteBoard)
         """
         response = self._client.post(
-            f"{self._server}{self._API_URl}/boards/{board_id}/undelete",
+            f"{self._server}{self.api_url}/boards/{board_id}/undelete",
         )
-        self._handle_possible_error(response.json())
+        self._check_response(response)
 
     # MARK: Board and blocks
     def insert_boards_and_blocks(
@@ -423,7 +462,7 @@ class FocalboardApi:
         [https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-insertBoardsAndBlocks](https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-insertBoardsAndBlocks)
         """
         response = self._client.post(
-            f"{self._server}{self._API_URl}/boards-and-blocks",
+            f"{self._server}{self.api_url}/boards-and-blocks",
             json=dict(
                 boards=[board.to_dict() for board in boards],
                 blocks=[
@@ -436,7 +475,8 @@ class FocalboardApi:
                 ],
             ),
         )
-        data = self._handle_possible_error(response.json())
+        self._check_response(response)
+        data = response.json()
         return BoardAndBlocks.from_dict(data)
 
     def patch_boards_and_blocks(
@@ -452,7 +492,7 @@ class FocalboardApi:
         [https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-patchBoardsAndBlocks](https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-patchBoardsAndBlocks)
         """
         response = self._client.patch(
-            f"{self._server}{self._API_URl}/boards-and-blocks",
+            f"{self._server}{self.api_url}/boards-and-blocks",
             json=dict(
                 boardIDs=board_ids,
                 boardPatches=[board.to_dict() for board in boards],
@@ -467,7 +507,8 @@ class FocalboardApi:
                 ],
             ),
         )
-        data = self._handle_possible_error(response.json())
+        self._check_response(response)
+        data = response.json()
         return BoardAndBlocks.from_dict(data)
 
     def delete_boards_and_blocks(
@@ -479,23 +520,26 @@ class FocalboardApi:
         [https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-deleteBoardsAndBlocks](https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-deleteBoardsAndBlocks)
         """
         response = self._client.delete(
-            f"{self._server}{self._API_URl}/boards-and-blocks",
+            f"{self._server}{self.api_url}/boards-and-blocks",
             json=dict(boards=board_ids, blocks=block_ids),
         )
-        if response.status_code != HTTP_CODES.OK:
-            self._handle_possible_error(response.json())
+        self._check_response(response)
 
     # MARK: Cards
-    def get_cards(self, board_id: str) -> list[Card]:
+    def get_cards(
+        self, board_id: str, page: int = 0, per_page: int = 100
+    ) -> list[Card]:
         """
         Fetches cards for the specified board.
 
         [https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-getCards](https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-getCards)
         """
         response = self._client.get(
-            f"{self._server}{self._API_URl}/boards/{board_id}/cards"
+            f"{self._server}{self.api_url}/boards/{board_id}/cards",
+            params=dict(page=page, per_page=per_page),
         )
-        data = self._handle_possible_error(response.json())
+        self._check_response(response)
+        data = response.json()
         return [Card.from_dict(item) for item in data]
 
     def get_card(self, card_id: str) -> Card:
@@ -504,8 +548,9 @@ class FocalboardApi:
 
         [https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-getCard](https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-getCard)
         """
-        response = self._client.get(f"{self._server}{self._API_URl}/cards/{card_id}")
-        data = self._handle_possible_error(response.json())
+        response = self._client.get(f"{self._server}{self.api_url}/cards/{card_id}")
+        self._check_response(response)
+        data = response.json()
         return Card.from_dict(data)
 
     def create_card(
@@ -517,11 +562,12 @@ class FocalboardApi:
         [https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-createCard](https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-createCard)
         """
         response = self._client.post(
-            f"{self._server}{self._API_URl}/boards/{board_id}/cards",
+            f"{self._server}{self.api_url}/boards/{board_id}/cards",
             json=(card.to_dict() if card else {}),
             params=dict(disable_notify="true" if disable_notify else "false"),
         )
-        data = self._handle_possible_error(response.json())
+        self._check_response(response)
+        data = response.json()
         return Card.from_dict(data)
 
     def patch_card(
@@ -533,11 +579,12 @@ class FocalboardApi:
         [https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-patchCard](https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-patchCard)
         """
         response = self._client.patch(
-            f"{self._server}{self._API_URl}/cards/{card_id}",
+            f"{self._server}{self.api_url}/cards/{card_id}",
             json=card.to_dict(),
             params=dict(disable_notify="true" if disable_notify else "false"),
         )
-        data = self._handle_possible_error(response.json())
+        self._check_response(response)
+        data = response.json()
         return Card.from_dict(data)
 
     # MARK: Team
@@ -547,8 +594,9 @@ class FocalboardApi:
 
         [https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-getTeams](https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-getTeams)
         """
-        response = self._client.get(f"{self._server}{self._API_URl}/teams")
-        data = self._handle_possible_error(response.json())
+        response = self._client.get(f"{self._server}{self.api_url}/teams")
+        self._check_response(response)
+        data = response.json()
         return [Team.from_dict(item) for item in data]
 
     def get_team(self, team_id: str) -> Team:
@@ -557,8 +605,9 @@ class FocalboardApi:
 
         [https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-getTeam](https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-getTeam)
         """
-        response = self._client.get(f"{self._server}{self._API_URl}/teams/{team_id}")
-        data = self._handle_possible_error(response.json())
+        response = self._client.get(f"{self._server}{self.api_url}/teams/{team_id}")
+        self._check_response(response)
+        data = response.json()
         return Team.from_dict(data)
 
     def get_team_users(
@@ -570,12 +619,13 @@ class FocalboardApi:
         [https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-getTeamUsers](https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-getTeamUsers)
         """
         response = self._client.get(
-            f"{self._server}{self._API_URl}/teams/{team_id}/users",
+            f"{self._server}{self.api_url}/teams/{team_id}/users",
             params=dict(
                 search=search, exclude_bots="true" if exclude_bots else "false"
             ),
         )
-        data = self._handle_possible_error(response.json())
+        self._check_response(response)
+        data = response.json()
         return [User.from_dict(item) for item in data]
 
     def onboard(self, team_id: str) -> Onboarding:
@@ -585,9 +635,10 @@ class FocalboardApi:
         [https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-onboard](https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-onboard)
         """
         response = self._client.post(
-            f"{self._server}{self._API_URl}/teams/{team_id}/onboard"
+            f"{self._server}{self.api_url}/teams/{team_id}/onboard"
         )
-        data = self._handle_possible_error(response.json())
+        self._check_response(response)
+        data = response.json()
         return Onboarding.from_dict(data)
 
     def get_templates(self, team_id: str) -> list[Board]:
@@ -597,9 +648,10 @@ class FocalboardApi:
         [https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-getTemplates](https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-getTemplates)
         """
         response = self._client.get(
-            f"{self._server}{self._API_URl}/teams/{team_id}/templates"
+            f"{self._server}{self.api_url}/teams/{team_id}/templates"
         )
-        data = self._handle_possible_error(response.json())
+        self._check_response(response)
+        data = response.json()
         return [Board.from_dict(item) for item in data]
 
     def archive_export_team(self, team_id: str) -> bytes:
@@ -609,10 +661,9 @@ class FocalboardApi:
         [https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-archiveExportTeam](https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-archiveExportTeam)
         """
         response = self._client.get(
-            f"{self._server}{self._API_URl}/teams/{team_id}/archive/export",
+            f"{self._server}{self.api_url}/teams/{team_id}/archive/export",
         )
-        if response.status_code != HTTP_CODES.OK:
-            self._handle_possible_error(response.json())
+        self._check_response(response)
         return response.content
 
     def archive_import(self, team_id: str, file: bytes) -> None:
@@ -622,11 +673,10 @@ class FocalboardApi:
         [https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-archiveImport](https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-archiveImport)
         """
         response = self._client.post(
-            f"{self._server}{self._API_URl}/teams/{team_id}/archive/import",
+            f"{self._server}{self.api_url}/teams/{team_id}/archive/import",
             files=dict(file=file),
         )
-        if response.status_code != HTTP_CODES.OK:
-            self._handle_possible_error(response.json())
+        self._check_response(response)
 
     # MARK: User
     def get_me(self) -> User:
@@ -635,8 +685,9 @@ class FocalboardApi:
 
         [https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-getMe](https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-getMe)
         """
-        response = self._client.get(f"{self._server}{self._API_URl}/users/me")
-        data = self._handle_possible_error(response.json())
+        response = self._client.get(f"{self._server}{self.api_url}/users/me")
+        self._check_response(response)
+        data = response.json()
         return User.from_dict(data)
 
     def get_user(self, user_id: str) -> User:
@@ -645,8 +696,9 @@ class FocalboardApi:
 
         [https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-getUser](https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-getUser)
         """
-        response = self._client.get(f"{self._server}{self._API_URl}/users/{user_id}")
-        data = self._handle_possible_error(response.json())
+        response = self._client.get(f"{self._server}{self.api_url}/users/{user_id}")
+        self._check_response(response)
+        data = response.json()
         return User.from_dict(data)
 
     def get_my_memberships(self) -> list[Member]:
@@ -656,9 +708,10 @@ class FocalboardApi:
         [https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-getMyMemberships](https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-getMyMemberships)
         """
         response = self._client.get(
-            f"{self._server}{self._API_URl}/users/me/memberships"
+            f"{self._server}{self.api_url}/users/me/memberships"
         )
-        data = self._handle_possible_error(response.json())
+        self._check_response(response)
+        data = response.json()
         return [Member.from_dict(item) for item in data]
 
     # MARK: Category
@@ -669,9 +722,10 @@ class FocalboardApi:
         [https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-getUserCategoryBoards](https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-getUserCategoryBoards)
         """
         response = self._client.get(
-            f"{self._server}{self._API_URl}/teams/{team_id}/categories"
+            f"{self._server}{self.api_url}/teams/{team_id}/categories"
         )
-        data = self._handle_possible_error(response.json())
+        self._check_response(response)
+        data = response.json()
         return [Category.from_dict(item) for item in data]
 
     def create_category(
@@ -683,10 +737,11 @@ class FocalboardApi:
         [https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-createCategory](https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-createCategory)
         """
         response = self._client.post(
-            f"{self._server}{self._API_URl}/teams/{team_id}/categories",
+            f"{self._server}{self.api_url}/teams/{team_id}/categories",
             json=dict(teamID=team_id, userID=user_id, **category.to_dict()),
         )
-        data = self._handle_possible_error(response.json())
+        self._check_response(response)
+        data = response.json()
         return Category.from_dict(data)
 
     def update_category(
@@ -698,12 +753,13 @@ class FocalboardApi:
         [https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-updateCategory](https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-updateCategory)
         """
         response = self._client.put(
-            f"{self._server}{self._API_URl}/teams/{team_id}/categories/{category_id}",
+            f"{self._server}{self.api_url}/teams/{team_id}/categories/{category_id}",
             json=dict(
                 teamID=team_id, userID=user_id, id=category_id, **category.to_dict()
             ),
         )
-        data = self._handle_possible_error(response.json())
+        self._check_response(response)
+        data = response.json()
         return Category.from_dict(data)
 
     def delete_category(self, team_id: str, category_id: str) -> None:
@@ -713,9 +769,9 @@ class FocalboardApi:
         [https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-deleteCategory](https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-deleteCategory)
         """
         response = self._client.delete(
-            f"{self._server}{self._API_URl}/teams/{team_id}/categories/{category_id}",
+            f"{self._server}{self.api_url}/teams/{team_id}/categories/{category_id}",
         )
-        self._handle_possible_error(response.json())
+        self._check_response(response)
 
     def get_user_config(self) -> list[UserPreference]:
         """
@@ -723,8 +779,9 @@ class FocalboardApi:
 
         [https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-getUserConfig](https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-getUserConfig)
         """
-        response = self._client.get(f"{self._server}{self._API_URl}/users/me/config")
-        data = self._handle_possible_error(response.json())
+        response = self._client.get(f"{self._server}{self.api_url}/users/me/config")
+        self._check_response(response)
+        data = response.json()
         return [UserPreference.from_dict(item) for item in data]
 
     def update_user_config(
@@ -736,10 +793,11 @@ class FocalboardApi:
         [https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-updateUserConfig](https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-updateUserConfig)
         """
         response = self._client.put(
-            f"{self._server}{self._API_URl}/users/{user_id}/config",
+            f"{self._server}{self.api_url}/users/{user_id}/config",
             json=user_preference.to_dict(),
         )
-        data = self._handle_possible_error(response.json())
+        self._check_response(response)
+        data = response.json()
         return [UserPreference.from_dict(item) for item in data]
 
     def get_users(self, user_ids: list[str]) -> list[User]:
@@ -749,9 +807,10 @@ class FocalboardApi:
         [https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-getUsersList](https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-getUsersList)
         """
         response = self._client.post(
-            f"{self._server}{self._API_URl}/users", json=user_ids
+            f"{self._server}{self.api_url}/users", json=user_ids
         )
-        data = self._handle_possible_error(response.json())
+        self._check_response(response)
+        data = response.json()
         return [User.from_dict(item) for item in data]
 
     # MARK: Subscription
@@ -762,9 +821,10 @@ class FocalboardApi:
         [https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-getSubscriptions](https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-getSubscriptions)
         """
         response = self._client.get(
-            f"{self._server}{self._API_URl}/subscriptions/{subscriber_id}"
+            f"{self._server}{self.api_url}/subscriptions/{subscriber_id}"
         )
-        data = self._handle_possible_error(response.json())
+        self._check_response(response)
+        data = response.json()
         return [Subscription.from_dict(item) for item in data]
 
     def create_subscription(self, block: Block, user_id: str) -> Subscription:
@@ -774,7 +834,7 @@ class FocalboardApi:
         [https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-createSubscription](https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-createSubscription)
         """
         response = self._client.post(
-            f"{self._server}{self._API_URl}/subscriptions",
+            f"{self._server}{self.api_url}/subscriptions",
             json=dict(
                 blockID=block.id,
                 BlockType=block.type,
@@ -782,7 +842,8 @@ class FocalboardApi:
                 SubscriberType="user",
             ),
         )
-        data = self._handle_possible_error(response.json())
+        self._check_response(response)
+        data = response.json()
         return Subscription.from_dict(data)
 
     def delete_subscriptions(self, block_id: str, user_id: str) -> None:
@@ -792,9 +853,9 @@ class FocalboardApi:
         [https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-deleteSubscription](https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-deleteSubscription)
         """
         response = self._client.delete(
-            f"{self._server}{self._API_URl}/subscriptions/{block_id}/{user_id}"
+            f"{self._server}{self.api_url}/subscriptions/{block_id}/{user_id}"
         )
-        self._handle_possible_error(response.json())
+        self._check_response(response)
 
     # MARK: Channel
     def search_my_channels(self, team_id: str, search: str = "") -> list[Channel]:
@@ -804,10 +865,11 @@ class FocalboardApi:
         [https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-searchMyChannels](https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-searchMyChannels)
         """
         response = self._client.get(
-            f"{self._server}{self._API_URl}/teams/{team_id}/channels",
+            f"{self._server}{self.api_url}/teams/{team_id}/channels",
             params=dict(search=search),
         )
-        data = self._handle_possible_error(response.json())
+        self._check_response(response)
+        data = response.json()
         return [Channel.from_dict(item) for item in data]
 
     def get_channel(self, team_id: str, channel_id: str) -> Channel:
@@ -817,9 +879,10 @@ class FocalboardApi:
         [https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-getChannel](https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-getChannel)
         """
         response = self._client.get(
-            f"{self._server}{self._API_URl}/teams/{team_id}/channels/{channel_id}"
+            f"{self._server}{self.api_url}/teams/{team_id}/channels/{channel_id}"
         )
-        data = self._handle_possible_error(response.json())
+        self._check_response(response)
+        data = response.json()
         return Channel.from_dict(data)
 
     # MARK: File
@@ -830,10 +893,9 @@ class FocalboardApi:
         [https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-getFile](https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-getFile)
         """
         response = self._client.get(
-            f"{self._server}{self._API_URl}/files/teams/{team_id}/{board_id}/{filename}"
+            f"{self._server}{self.api_url}/files/teams/{team_id}/{board_id}/{filename}"
         )
-        if response.status_code != HTTP_CODES.OK:
-            self._handle_possible_error(response.json())
+        self._check_response(response)
         return response.content
 
     def upload_file(
@@ -845,10 +907,11 @@ class FocalboardApi:
         [https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-uploadFile](https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-uploadFile)
         """
         response = self._client.post(
-            f"{self._server}{self._API_URl}/teams/{team_id}/{board_id}/files",
+            f"{self._server}{self.api_url}/teams/{team_id}/{board_id}/files",
             files=dict(file=file),
         )
-        data = self._handle_possible_error(response.json())
+        self._check_response(response)
+        data = response.json()
         return FileUploadResponse.from_dict(data)
 
     # MARK: Statistics
@@ -858,8 +921,9 @@ class FocalboardApi:
 
         [https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-handleStatistics](https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-handleStatistics)
         """
-        response = self._client.get(f"{self._server}{self._API_URl}/statistics")
-        data = self._handle_possible_error(response.json())
+        response = self._client.get(f"{self._server}{self.api_url}/statistics")
+        self._check_response(response)
+        data = response.json()
         return BoardsStatistics.from_dict(data)
 
     # MARK: Auth
@@ -870,9 +934,10 @@ class FocalboardApi:
         [https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-login](https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-login)
         """
         response = self._client.post(
-            f"{self._server}{self._API_URl}/login", json=auth.to_dict()
+            f"{self._server}{self.api_url}/login", json=auth.to_dict()
         )
-        data = self._handle_possible_error(response.json())
+        self._check_response(response)
+        data = response.json()
         self._client.headers["Authorization"] = "Bearer " + data.token
 
     def logout(self):
@@ -881,8 +946,8 @@ class FocalboardApi:
 
         [https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-logout](https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-logout)
         """
-        response = self._client.post(f"{self._server}{self._API_URl}/logout")
-        self._handle_possible_error(response.json())
+        response = self._client.post(f"{self._server}{self.api_url}/logout")
+        self._check_response(response)
         del self._client.headers["Authorization"]
 
     # MARK: System
@@ -892,6 +957,7 @@ class FocalboardApi:
 
         [https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-getClientConfig](https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-getClientConfig)
         """
-        response = self._client.get(f"{self._server}{self._API_URl}/clientConfig")
-        data = self._handle_possible_error(response.json())
+        response = self._client.get(f"{self._server}{self.api_url}/clientConfig")
+        self._check_response(response)
+        data = response.json()
         return ClientConfig.from_dict(data)
