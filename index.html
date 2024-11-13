@@ -1769,7 +1769,7 @@
         <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">api_url</span><span class="si">}</span><span class="s2">/boards/</span><span class="si">{</span><span class="n">board_id</span><span class="si">}</span><span class="s2">/members&quot;</span><span class="p">,</span>
         <span class="n">json</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">userID</span><span class="o">=</span><span class="n">user_id</span><span class="p">,</span> <span class="o">**</span><span class="p">(</span><span class="n">member</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span> <span class="k">if</span> <span class="n">member</span> <span class="k">else</span> <span class="p">{})),</span>
     <span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_handle_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_check_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">Member</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
@@ -1815,7 +1815,7 @@
     <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
         <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">api_url</span><span class="si">}</span><span class="s2">/boards/</span><span class="si">{</span><span class="n">board_id</span><span class="si">}</span><span class="s2">/archive/export&quot;</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_handle_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_check_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">content</span>
 </code></pre></div></td></tr></table></div>
             </details>
@@ -1860,7 +1860,7 @@
     <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
         <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">api_url</span><span class="si">}</span><span class="s2">/teams/</span><span class="si">{</span><span class="n">team_id</span><span class="si">}</span><span class="s2">/archive/export&quot;</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_handle_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_check_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">content</span>
 </code></pre></div></td></tr></table></div>
             </details>
@@ -1906,7 +1906,7 @@
         <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">api_url</span><span class="si">}</span><span class="s2">/teams/</span><span class="si">{</span><span class="n">team_id</span><span class="si">}</span><span class="s2">/archive/import&quot;</span><span class="p">,</span>
         <span class="n">files</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">),</span>
     <span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_handle_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_check_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -1947,7 +1947,7 @@
 <span class="sd">    [https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-getClientConfig](https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-getClientConfig)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">api_url</span><span class="si">}</span><span class="s2">/clientConfig&quot;</span><span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_handle_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_check_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">ClientConfig</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
@@ -1996,7 +1996,7 @@
         <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">api_url</span><span class="si">}</span><span class="s2">/boards&quot;</span><span class="p">,</span>
         <span class="n">json</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">teamID</span><span class="o">=</span><span class="n">team_id</span><span class="p">,</span> <span class="o">**</span><span class="n">board</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()),</span>
     <span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_handle_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_check_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">Board</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
@@ -2051,7 +2051,7 @@
         <span class="n">json</span><span class="o">=</span><span class="p">(</span><span class="n">card</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span> <span class="k">if</span> <span class="n">card</span> <span class="k">else</span> <span class="p">{}),</span>
         <span class="n">params</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">disable_notify</span><span class="o">=</span><span class="s2">&quot;true&quot;</span> <span class="k">if</span> <span class="n">disable_notify</span> <span class="k">else</span> <span class="s2">&quot;false&quot;</span><span class="p">),</span>
     <span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_handle_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_check_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">Card</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
@@ -2104,7 +2104,7 @@
         <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">api_url</span><span class="si">}</span><span class="s2">/teams/</span><span class="si">{</span><span class="n">team_id</span><span class="si">}</span><span class="s2">/categories&quot;</span><span class="p">,</span>
         <span class="n">json</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">teamID</span><span class="o">=</span><span class="n">team_id</span><span class="p">,</span> <span class="n">userID</span><span class="o">=</span><span class="n">user_id</span><span class="p">,</span> <span class="o">**</span><span class="n">category</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()),</span>
     <span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_handle_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_check_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">Category</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
@@ -2163,7 +2163,7 @@
             <span class="n">SubscriberType</span><span class="o">=</span><span class="s2">&quot;user&quot;</span><span class="p">,</span>
         <span class="p">),</span>
     <span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_handle_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_check_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">Subscription</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
@@ -2208,7 +2208,7 @@
     <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span>
         <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">api_url</span><span class="si">}</span><span class="s2">/boards/</span><span class="si">{</span><span class="n">board_id</span><span class="si">}</span><span class="s2">/blocks/</span><span class="si">{</span><span class="n">block_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_handle_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_check_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -2251,7 +2251,7 @@
     <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span>
         <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">api_url</span><span class="si">}</span><span class="s2">/boards/</span><span class="si">{</span><span class="n">board_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_handle_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_check_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -2300,7 +2300,7 @@
         <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">api_url</span><span class="si">}</span><span class="s2">/boards-and-blocks&quot;</span><span class="p">,</span>
         <span class="n">json</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">boards</span><span class="o">=</span><span class="n">board_ids</span><span class="p">,</span> <span class="n">blocks</span><span class="o">=</span><span class="n">block_ids</span><span class="p">),</span>
     <span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_handle_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_check_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -2343,7 +2343,7 @@
     <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span>
         <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">api_url</span><span class="si">}</span><span class="s2">/teams/</span><span class="si">{</span><span class="n">team_id</span><span class="si">}</span><span class="s2">/categories/</span><span class="si">{</span><span class="n">category_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_handle_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_check_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -2394,7 +2394,7 @@
     <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span>
         <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">api_url</span><span class="si">}</span><span class="s2">/boards/</span><span class="si">{</span><span class="n">board_id</span><span class="si">}</span><span class="s2">/members/</span><span class="si">{</span><span class="n">user_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_handle_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_check_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -2437,7 +2437,7 @@
     <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span>
         <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">api_url</span><span class="si">}</span><span class="s2">/subscriptions/</span><span class="si">{</span><span class="n">block_id</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">user_id</span><span class="si">}</span><span class="s2">&quot;</span>
     <span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_handle_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_check_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -2482,7 +2482,7 @@
     <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
         <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">api_url</span><span class="si">}</span><span class="s2">/boards/</span><span class="si">{</span><span class="n">board_id</span><span class="si">}</span><span class="s2">/blocks/</span><span class="si">{</span><span class="n">block_id</span><span class="si">}</span><span class="s2">/duplicate&quot;</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_handle_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_check_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
     <span class="k">return</span> <span class="p">[</span><span class="n">Block</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">data</span><span class="p">]</span>
 </code></pre></div></td></tr></table></div>
@@ -2529,7 +2529,7 @@
     <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
         <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">api_url</span><span class="si">}</span><span class="s2">/boards/</span><span class="si">{</span><span class="n">board_id</span><span class="si">}</span><span class="s2">/duplicate&quot;</span>
     <span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_handle_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_check_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">BoardAndBlocks</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
@@ -2588,7 +2588,7 @@
             <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="nb">type</span><span class="p">,</span>
         <span class="p">},</span>
     <span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_handle_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_check_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
     <span class="k">return</span> <span class="p">[</span><span class="n">Block</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">data</span><span class="p">]</span>
 </code></pre></div></td></tr></table></div>
@@ -2631,7 +2631,7 @@
 <span class="sd">    [https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-getBoard](https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-getBoard)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">api_url</span><span class="si">}</span><span class="s2">/boards/</span><span class="si">{</span><span class="n">board_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_handle_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_check_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">Board</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
@@ -2678,7 +2678,7 @@
     <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
         <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">api_url</span><span class="si">}</span><span class="s2">/teams/</span><span class="si">{</span><span class="n">team_id</span><span class="si">}</span><span class="s2">/boards&quot;</span>
     <span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_handle_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_check_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
     <span class="k">return</span> <span class="p">[</span><span class="n">Board</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">data</span><span class="p">]</span>
 </code></pre></div></td></tr></table></div>
@@ -2721,7 +2721,7 @@
 <span class="sd">    [https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-getCard](https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-getCard)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">api_url</span><span class="si">}</span><span class="s2">/cards/</span><span class="si">{</span><span class="n">card_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_handle_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_check_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">Card</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
@@ -2774,7 +2774,7 @@
         <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">api_url</span><span class="si">}</span><span class="s2">/boards/</span><span class="si">{</span><span class="n">board_id</span><span class="si">}</span><span class="s2">/cards&quot;</span><span class="p">,</span>
         <span class="n">params</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">page</span><span class="o">=</span><span class="n">page</span><span class="p">,</span> <span class="n">per_page</span><span class="o">=</span><span class="n">per_page</span><span class="p">),</span>
     <span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_handle_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_check_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
     <span class="k">return</span> <span class="p">[</span><span class="n">Card</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">data</span><span class="p">]</span>
 </code></pre></div></td></tr></table></div>
@@ -2821,7 +2821,7 @@
     <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
         <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">api_url</span><span class="si">}</span><span class="s2">/teams/</span><span class="si">{</span><span class="n">team_id</span><span class="si">}</span><span class="s2">/categories&quot;</span>
     <span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_handle_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_check_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
     <span class="k">return</span> <span class="p">[</span><span class="n">Category</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">data</span><span class="p">]</span>
 </code></pre></div></td></tr></table></div>
@@ -2868,7 +2868,7 @@
     <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
         <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">api_url</span><span class="si">}</span><span class="s2">/teams/</span><span class="si">{</span><span class="n">team_id</span><span class="si">}</span><span class="s2">/channels/</span><span class="si">{</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">&quot;</span>
     <span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_handle_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_check_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">Channel</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
@@ -2914,7 +2914,7 @@
     <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
         <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">api_url</span><span class="si">}</span><span class="s2">/files/teams/</span><span class="si">{</span><span class="n">team_id</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">board_id</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">&quot;</span>
     <span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_handle_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_check_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">content</span>
 </code></pre></div></td></tr></table></div>
             </details>
@@ -2956,7 +2956,7 @@
 <span class="sd">    [https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-getMe](https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-getMe)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">api_url</span><span class="si">}</span><span class="s2">/users/me&quot;</span><span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_handle_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_check_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">User</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
@@ -3003,7 +3003,7 @@
     <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
         <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">api_url</span><span class="si">}</span><span class="s2">/boards/</span><span class="si">{</span><span class="n">board_id</span><span class="si">}</span><span class="s2">/members&quot;</span>
     <span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_handle_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_check_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
     <span class="k">return</span> <span class="p">[</span><span class="n">Member</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">data</span><span class="p">]</span>
 </code></pre></div></td></tr></table></div>
@@ -3050,7 +3050,7 @@
     <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
         <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">api_url</span><span class="si">}</span><span class="s2">/users/me/memberships&quot;</span>
     <span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_handle_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_check_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
     <span class="k">return</span> <span class="p">[</span><span class="n">Member</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">data</span><span class="p">]</span>
 </code></pre></div></td></tr></table></div>
@@ -3097,7 +3097,7 @@
     <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
         <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">api_url</span><span class="si">}</span><span class="s2">/boards/</span><span class="si">{</span><span class="n">board_id</span><span class="si">}</span><span class="s2">/sharing&quot;</span>
     <span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_handle_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_check_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">Sharing</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
@@ -3140,7 +3140,7 @@
 <span class="sd">    [https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-handleStatistics](https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-handleStatistics)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">api_url</span><span class="si">}</span><span class="s2">/statistics&quot;</span><span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_handle_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_check_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">BoardsStatistics</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
@@ -3187,7 +3187,7 @@
     <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
         <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">api_url</span><span class="si">}</span><span class="s2">/subscriptions/</span><span class="si">{</span><span class="n">subscriber_id</span><span class="si">}</span><span class="s2">&quot;</span>
     <span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_handle_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_check_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
     <span class="k">return</span> <span class="p">[</span><span class="n">Subscription</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">data</span><span class="p">]</span>
 </code></pre></div></td></tr></table></div>
@@ -3230,7 +3230,7 @@
 <span class="sd">    [https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-getTeam](https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-getTeam)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">api_url</span><span class="si">}</span><span class="s2">/teams/</span><span class="si">{</span><span class="n">team_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_handle_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_check_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">Team</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
@@ -3287,7 +3287,7 @@
             <span class="n">search</span><span class="o">=</span><span class="n">search</span><span class="p">,</span> <span class="n">exclude_bots</span><span class="o">=</span><span class="s2">&quot;true&quot;</span> <span class="k">if</span> <span class="n">exclude_bots</span> <span class="k">else</span> <span class="s2">&quot;false&quot;</span>
         <span class="p">),</span>
     <span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_handle_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_check_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
     <span class="k">return</span> <span class="p">[</span><span class="n">User</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">data</span><span class="p">]</span>
 </code></pre></div></td></tr></table></div>
@@ -3330,7 +3330,7 @@
 <span class="sd">    [https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-getTeams](https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-getTeams)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">api_url</span><span class="si">}</span><span class="s2">/teams&quot;</span><span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_handle_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_check_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
     <span class="k">return</span> <span class="p">[</span><span class="n">Team</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">data</span><span class="p">]</span>
 </code></pre></div></td></tr></table></div>
@@ -3377,7 +3377,7 @@
     <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
         <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">api_url</span><span class="si">}</span><span class="s2">/teams/</span><span class="si">{</span><span class="n">team_id</span><span class="si">}</span><span class="s2">/templates&quot;</span>
     <span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_handle_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_check_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
     <span class="k">return</span> <span class="p">[</span><span class="n">Board</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">data</span><span class="p">]</span>
 </code></pre></div></td></tr></table></div>
@@ -3420,7 +3420,7 @@
 <span class="sd">    [https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-getUser](https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-getUser)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">api_url</span><span class="si">}</span><span class="s2">/users/</span><span class="si">{</span><span class="n">user_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_handle_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_check_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">User</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
@@ -3463,7 +3463,7 @@
 <span class="sd">    [https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-getUserConfig](https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-getUserConfig)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">api_url</span><span class="si">}</span><span class="s2">/users/me/config&quot;</span><span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_handle_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_check_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
     <span class="k">return</span> <span class="p">[</span><span class="n">UserPreference</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">data</span><span class="p">]</span>
 </code></pre></div></td></tr></table></div>
@@ -3510,7 +3510,7 @@
     <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
         <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">api_url</span><span class="si">}</span><span class="s2">/users&quot;</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">user_ids</span>
     <span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_handle_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_check_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
     <span class="k">return</span> <span class="p">[</span><span class="n">User</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">data</span><span class="p">]</span>
 </code></pre></div></td></tr></table></div>
@@ -3583,7 +3583,7 @@
             <span class="p">],</span>
         <span class="p">),</span>
     <span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_handle_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_check_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">BoardAndBlocks</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
@@ -3628,7 +3628,7 @@
     <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
         <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">api_url</span><span class="si">}</span><span class="s2">/boards/</span><span class="si">{</span><span class="n">board_id</span><span class="si">}</span><span class="s2">/join&quot;</span>
     <span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_handle_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_check_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -3671,7 +3671,7 @@
     <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
         <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">api_url</span><span class="si">}</span><span class="s2">/boards/</span><span class="si">{</span><span class="n">board_id</span><span class="si">}</span><span class="s2">/leave&quot;</span>
     <span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_handle_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_check_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -3716,7 +3716,7 @@
     <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
         <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">api_url</span><span class="si">}</span><span class="s2">/login&quot;</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">auth</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
     <span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_handle_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_check_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s2">&quot;Authorization&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Bearer &quot;</span> <span class="o">+</span> <span class="n">data</span><span class="o">.</span><span class="n">token</span>
 </code></pre></div></td></tr></table></div>
@@ -3758,7 +3758,7 @@
 <span class="sd">    [https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-logout](https://htmlpreview.github.io/?https://github.com/mattermost/focalboard/blob/main/server/swagger/docs/html/index.html#api-Default-logout)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">api_url</span><span class="si">}</span><span class="s2">/logout&quot;</span><span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_handle_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_check_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
     <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s2">&quot;Authorization&quot;</span><span class="p">]</span>
 </code></pre></div></td></tr></table></div>
             </details>
@@ -3804,7 +3804,7 @@
     <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
         <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">api_url</span><span class="si">}</span><span class="s2">/teams/</span><span class="si">{</span><span class="n">team_id</span><span class="si">}</span><span class="s2">/onboard&quot;</span>
     <span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_handle_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_check_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">Onboarding</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
@@ -3865,7 +3865,7 @@
         <span class="n">json</span><span class="o">=</span><span class="n">block</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(),</span>
         <span class="n">params</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">disable_notify</span><span class="o">=</span><span class="s2">&quot;true&quot;</span> <span class="k">if</span> <span class="n">disable_notify</span> <span class="k">else</span> <span class="s2">&quot;false&quot;</span><span class="p">),</span>
     <span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_handle_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_check_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -3928,7 +3928,7 @@
         <span class="p">),</span>
         <span class="n">params</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">disable_notify</span><span class="o">=</span><span class="s2">&quot;true&quot;</span> <span class="k">if</span> <span class="n">disable_notify</span> <span class="k">else</span> <span class="s2">&quot;false&quot;</span><span class="p">),</span>
     <span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_handle_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_check_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -3975,7 +3975,7 @@
         <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">api_url</span><span class="si">}</span><span class="s2">/boards/</span><span class="si">{</span><span class="n">board_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
         <span class="n">json</span><span class="o">=</span><span class="n">board</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(),</span>
     <span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_handle_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_check_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">Board</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
@@ -4060,7 +4060,7 @@
             <span class="p">],</span>
         <span class="p">),</span>
     <span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_handle_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_check_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">BoardAndBlocks</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
@@ -4115,7 +4115,7 @@
         <span class="n">json</span><span class="o">=</span><span class="n">card</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(),</span>
         <span class="n">params</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">disable_notify</span><span class="o">=</span><span class="s2">&quot;true&quot;</span> <span class="k">if</span> <span class="n">disable_notify</span> <span class="k">else</span> <span class="s2">&quot;false&quot;</span><span class="p">),</span>
     <span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_handle_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_check_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">Card</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
@@ -4164,7 +4164,7 @@
         <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">api_url</span><span class="si">}</span><span class="s2">/boards/</span><span class="si">{</span><span class="n">board_id</span><span class="si">}</span><span class="s2">/sharing&quot;</span><span class="p">,</span>
         <span class="n">json</span><span class="o">=</span><span class="n">sharing</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(),</span>
     <span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_handle_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_check_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">Sharing</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
@@ -4213,7 +4213,7 @@
     <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
         <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">api_url</span><span class="si">}</span><span class="s2">/boards/search&quot;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">q</span><span class="o">=</span><span class="n">query</span><span class="p">)</span>
     <span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_handle_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_check_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
     <span class="k">return</span> <span class="p">[</span><span class="n">Board</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">data</span><span class="p">]</span>
 </code></pre></div></td></tr></table></div>
@@ -4262,7 +4262,7 @@
         <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">api_url</span><span class="si">}</span><span class="s2">/teams/</span><span class="si">{</span><span class="n">team_id</span><span class="si">}</span><span class="s2">/boards/search&quot;</span><span class="p">,</span>
         <span class="n">params</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">q</span><span class="o">=</span><span class="n">query</span><span class="p">),</span>
     <span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_handle_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_check_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
     <span class="k">return</span> <span class="p">[</span><span class="n">Board</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">data</span><span class="p">]</span>
 </code></pre></div></td></tr></table></div>
@@ -4311,7 +4311,7 @@
         <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">api_url</span><span class="si">}</span><span class="s2">/teams/</span><span class="si">{</span><span class="n">team_id</span><span class="si">}</span><span class="s2">/boards/search/linkable&quot;</span><span class="p">,</span>
         <span class="n">params</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">q</span><span class="o">=</span><span class="n">query</span><span class="p">),</span>
     <span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_handle_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_check_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
     <span class="k">return</span> <span class="p">[</span><span class="n">Board</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">data</span><span class="p">]</span>
 </code></pre></div></td></tr></table></div>
@@ -4360,7 +4360,7 @@
         <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">api_url</span><span class="si">}</span><span class="s2">/teams/</span><span class="si">{</span><span class="n">team_id</span><span class="si">}</span><span class="s2">/channels&quot;</span><span class="p">,</span>
         <span class="n">params</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">search</span><span class="o">=</span><span class="n">search</span><span class="p">),</span>
     <span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_handle_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_check_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
     <span class="k">return</span> <span class="p">[</span><span class="n">Channel</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">data</span><span class="p">]</span>
 </code></pre></div></td></tr></table></div>
@@ -4405,7 +4405,7 @@
     <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
         <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">api_url</span><span class="si">}</span><span class="s2">/boards/</span><span class="si">{</span><span class="n">board_id</span><span class="si">}</span><span class="s2">/blocks/</span><span class="si">{</span><span class="n">block_id</span><span class="si">}</span><span class="s2">/undelete&quot;</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_handle_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_check_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -4448,7 +4448,7 @@
     <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
         <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">api_url</span><span class="si">}</span><span class="s2">/boards/</span><span class="si">{</span><span class="n">board_id</span><span class="si">}</span><span class="s2">/undelete&quot;</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_handle_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_check_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -4505,7 +4505,7 @@
         <span class="n">json</span><span class="o">=</span><span class="p">[</span><span class="n">block</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span> <span class="k">for</span> <span class="n">block</span> <span class="ow">in</span> <span class="n">blocks</span><span class="p">],</span>
         <span class="n">params</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">disable_notify</span><span class="o">=</span><span class="s2">&quot;true&quot;</span> <span class="k">if</span> <span class="n">disable_notify</span> <span class="k">else</span> <span class="s2">&quot;false&quot;</span><span class="p">),</span>
     <span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_handle_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_check_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -4552,7 +4552,7 @@
     <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
         <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">api_url</span><span class="si">}</span><span class="s2">/teams/</span><span class="si">{</span><span class="n">team_id</span><span class="si">}</span><span class="s2">/categories/</span><span class="si">{</span><span class="n">category_id</span><span class="si">}</span><span class="s2">/boards/</span><span class="si">{</span><span class="n">board_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_handle_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_check_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -4607,7 +4607,7 @@
             <span class="n">teamID</span><span class="o">=</span><span class="n">team_id</span><span class="p">,</span> <span class="n">userID</span><span class="o">=</span><span class="n">user_id</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="n">category_id</span><span class="p">,</span> <span class="o">**</span><span class="n">category</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
         <span class="p">),</span>
     <span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_handle_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_check_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">Category</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
@@ -4656,7 +4656,7 @@
         <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">api_url</span><span class="si">}</span><span class="s2">/boards/</span><span class="si">{</span><span class="n">board_id</span><span class="si">}</span><span class="s2">/members/</span><span class="si">{</span><span class="n">user_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
         <span class="n">json</span><span class="o">=</span><span class="n">member</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(),</span>
     <span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_handle_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_check_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">Member</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
@@ -4709,7 +4709,7 @@
         <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">api_url</span><span class="si">}</span><span class="s2">/users/</span><span class="si">{</span><span class="n">user_id</span><span class="si">}</span><span class="s2">/config&quot;</span><span class="p">,</span>
         <span class="n">json</span><span class="o">=</span><span class="n">user_preference</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(),</span>
     <span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_handle_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_check_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
     <span class="k">return</span> <span class="p">[</span><span class="n">UserPreference</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">data</span><span class="p">]</span>
 </code></pre></div></td></tr></table></div>
@@ -4762,7 +4762,7 @@
         <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">api_url</span><span class="si">}</span><span class="s2">/teams/</span><span class="si">{</span><span class="n">team_id</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">board_id</span><span class="si">}</span><span class="s2">/files&quot;</span><span class="p">,</span>
         <span class="n">files</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">),</span>
     <span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_handle_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_check_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">FileUploadResponse</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
